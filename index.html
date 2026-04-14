@@ -3,66 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCFHS Nursing Exam Simulator - Level 4</title>
+    <title>SCFHS Mock Test Simulator</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; color: #333; line-height: 1.6; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        .header { border-bottom: 3px solid #2c3e50; margin-bottom: 30px; padding-bottom: 15px; }
-        .q-card { border: 1px solid #e0e0e0; padding: 25px; margin-bottom: 30px; border-radius: 8px; background: #fff; position: relative; }
-        .q-number { position: absolute; top: -12px; left: 15px; background: #2c3e50; color: white; padding: 2px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9em; }
-        .vignette { font-weight: 600; font-size: 1.1em; color: #2c3e50; margin-bottom: 20px; display: block; }
-        .opt { display: block; margin: 12px 0; padding: 15px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        .opt:hover { background: #eef2f7; border-color: #3498db; }
-        .opt input { margin-right: 15px; transform: scale(1.2); }
-        .selected-opt { background: #e7eff7; border-color: #3498db; }
-        button { background: #2c3e50; color: white; padding: 20px; border: none; width: 100%; cursor: pointer; border-radius: 8px; font-size: 18px; font-weight: bold; margin-top: 20px; transition: 0.3s; }
-        button:hover { background: #1a252f; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        
-        #transcript { display: none; }
-        .result-row { padding: 20px; margin-bottom: 20px; border-left: 6px solid #ccc; background: #fdfdfd; border-radius: 4px; }
-        .correct { border-left-color: #27ae60; background: #f0fff4; }
-        .incorrect { border-left-color: #e74c3c; background: #fff5f5; }
-        .rationale { background: #eef6ff; padding: 15px; margin-top: 15px; border-radius: 6px; font-size: 0.95em; color: #2c3e50; border: 1px dashed #3498db; }
-        .status-badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.85em; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
-        
-        .score-box { text-align: center; padding: 40px; border-radius: 12px; color: white; margin-bottom: 30px; }
-        .pass { background: #27ae60; }
-        .fail { background: #e74c3c; }
+        :root {
+            --primary: #1a2a6c;
+            --secondary: #b21f1f;
+            --accent: #fdbb2d;
+            --bg: #f8f9fa;
+            --text: #333;
+        }
 
-        @media print { button { display: none; } }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            color: var(--text);
+        }
+
+        /* SCREEN MANAGEMENT */
+        .screen { display: none; padding: 20px; max-width: 900px; margin: auto; }
+        .active { display: block; }
+
+        /* WELCOME SCREEN */
+        .welcome-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 100px;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            width: 80%;
+            margin: 20px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        /* HEADER EXAM */
+        .exam-header {
+            background: var(--primary);
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* QUIZ CARD */
+        .quiz-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .vignette {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary);
+            padding-left: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .opt {
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            background: #fff;
+            font-weight: 500;
+        }
+
+        .opt:hover { background: #f0f4ff; border-color: var(--primary); }
+        .opt.selected { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* RATIONALE */
+        #rationale-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff3cd;
+            border-radius: 8px;
+            display: none;
+            border: 1px solid #ffeeba;
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .btn-start { background: var(--primary); color: white; }
+        .btn-next { background: #28a745; color: white; }
+        .btn-rationale { background: var(--accent); color: #333; }
+
+        /* RESULTS */
+        .result-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            line-height: 150px;
+            font-size: 2.5rem;
+            margin: 20px auto;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="exam-view">
-        <div class="header">
-            <h1 style="margin:0; color:#2c3e50;">Nursing Competency Simulator</h1>
-            <p style="color:#666;">Focus: <strong>SCFHS Prometric Standard</strong> | Target: <strong>Critical Thinking Level 4</strong></p>
-            <div style="margin-top:20px;">
-                <label><strong>Candidate Name:</strong></label>
-                <input type="text" id="candidate" placeholder="Input your name..." style="width:100%; padding:12px; margin-top:8px; border: 2px solid #ddd; border-radius: 6px; font-size:16px;">
-            </div>
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-card">
+            <h1>SCFHS MOCK TEST V2</h1>
+            <p>Nursing Licensure Examination - Clinical Specialty</p>
+            <input type="text" id="candidate-name" placeholder="Enter Full Name (e.g., Nurse Ahmad)">
+            <br>
+            <button class="btn btn-start" onclick="startExam()">Start Mock Test</button>
+        </div>
+    </div>
+
+    <div id="exam-screen" class="screen">
+        <div class="exam-header">
+            <div>Candidate: <strong id="display-name"></strong></div>
+            <div id="progress-text">Q 1/100</div>
+            <div id="timer-text">00:00</div>
         </div>
 
-        <div id="quiz-mount">
+        <div class="quiz-card">
+            <div id="vignette" class="vignette"></div>
+            <div id="options" class="options-grid"></div>
+
+            <div id="rationale-area"></div>
+
+            <div style="margin-top: 30px; display: flex; gap: 10px;">
+                <button class="btn btn-rationale" onclick="showRationale()">Rationale</button>
+                <button class="btn btn-next" onclick="nextQuestion()">Next Question</button>
             </div>
-
-        <button onclick="analyzePerformance()">FINISH & GENERATE ANALYTICS</button>
+        </div>
     </div>
 
-    <div id="transcript">
-        <div id="meta-data"></div>
-        <h2 style="border-bottom: 2px solid #2c3e50; padding-bottom:10px;">Clinical Performance Review</h2>
-        <div id="analysis-results"></div>
-        <button onclick="window.print()" style="background:#34495e;">Download PDF Report</button>
-        <button onclick="location.reload()" style="background:#95a5a6; margin-top:10px;">Retake Examination</button>
+    <div id="result-screen" class="screen">
+        <div class="result-card">
+            <h2>Exam Completed!</h2>
+            <div id="score-display" class="score-circle">0%</div>
+            <p id="feedback-text"></p>
+            <button class="btn btn-start" onclick="location.reload()">Retake Exam</button>
+        </div>
     </div>
-</div>
 
-<script>
-    // Database Soal (diambil dari rawData Anda)
-    const rawData = `
+    <script>
+        // DATABASE SOAL (Bisa Anda tambah sampai ribuan)
+        const rawQuestions = [
         {
        id: 1,
             v: "A 62-year-old male with Congestive Heart Failure is receiving high-dose Furosemide. The nurse notes confusion, muscle weakness, and prominent U-waves on the ECG. What is the priority nursing action?",
@@ -1384,104 +1502,106 @@
             scfhs: "SCFHS: (B) 'Safe Action'. (A) and (C) are 'Unsafe' practices that cause injury. Seizures cannot be stopped by the patient (D)."
         }
         // TERUSKAN SAMPAI 100 DENGAN FORMAT YANG SAMA
-    `;
+    ];
 
-    // Parser Logic: Mengubah teks mentah menjadi array objek
-    function parseQuestions(text) {
-        const blocks = text.trim().split(/ID: \d+/);
-        const questions = [];
-        let idCounter = 1;
+        let examQuestions = [];
+        let currentIdx = 0;
+        let score = 0;
+        let timer;
+        let seconds = 0;
 
-        blocks.forEach(block => {
-            if (block.trim() === "") return;
+        // FUNGSI ROLLING / SHUFFLE
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function startExam() {
+            const name = document.getElementById('candidate-name').value;
+            if (!name) return alert("Please enter your name!");
+
+            document.getElementById('display-name').innerText = name;
+            document.getElementById('welcome-screen').classList.remove('active');
+            document.getElementById('exam-screen').classList.add('active');
+
+            // Persiapkan Soal (Acak)
+            examQuestions = shuffle([...rawQuestions]);
+            currentIdx = 0;
+            score = 0;
             
-            const lines = block.trim().split('\n');
-            const qObj = { id: idCounter++, options: {} };
+            startTimer();
+            renderQuestion();
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                seconds++;
+                let m = Math.floor(seconds / 60).toString().padStart(2, '0');
+                let s = (seconds % 60).toString().padStart(2, '0');
+                document.getElementById('timer-text').innerText = `${m}:${s}`;
+            }, 1000);
+        }
+
+        function renderQuestion() {
+            const q = examQuestions[currentIdx];
+            document.getElementById('progress-text').innerText = `Q ${currentIdx + 1}/${examQuestions.length}`;
+            document.getElementById('vignette').innerText = q.v;
+            document.getElementById('rationale-area').style.display = 'none';
             
-            lines.forEach(line => {
-                if (line.startsWith('V:')) qObj.vignette = line.replace('V:', '').trim();
-                if (line.startsWith('A:')) qObj.options.A = line.replace('A:', '').trim();
-                if (line.startsWith('B:')) qObj.options.B = line.replace('B:', '').trim();
-                if (line.startsWith('C:')) qObj.options.C = line.replace('C:', '').trim();
-                if (line.startsWith('D:')) qObj.options.D = line.replace('D:', '').trim();
-                if (line.startsWith('K:')) qObj.key = line.replace('K:', '').trim();
-                if (line.startsWith('SCFHS:')) qObj.rationale = line.replace('SCFHS:', '').trim();
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+
+            ['a', 'b', 'c', 'd'].forEach(key => {
+                const btn = document.createElement('div');
+                btn.className = 'opt';
+                btn.innerText = `${key.toUpperCase()}. ${q[key]}`;
+                btn.onclick = () => selectAnswer(btn, key.toUpperCase());
+                optionsDiv.appendChild(btn);
             });
-            questions.push(qObj);
-        });
-        return questions;
-    }
+        }
 
-    const quizData = parseQuestions(rawData);
+        let selectedAns = null;
+        function selectAnswer(el, val) {
+            document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedAns = val;
+        }
 
-    // Render Logic
-    function renderQuiz() {
-        const mount = document.getElementById('quiz-mount');
-        quizData.forEach((q, index) => {
-            const card = document.createElement('div');
-            card.className = 'q-card';
-            card.innerHTML = `
-                <div class="q-number">Question ${q.id}</div>
-                <div class="vignette">${q.vignette}</div>
-                <label class="opt" onclick="select(this)"><input type="radio" name="q${q.id}" value="A"> ${q.options.A}</label>
-                <label class="opt" onclick="select(this)"><input type="radio" name="q${q.id}" value="B"> ${q.options.B}</label>
-                <label class="opt" onclick="select(this)"><input type="radio" name="q${q.id}" value="C"> ${q.options.C}</label>
-                <label class="opt" onclick="select(this)"><input type="radio" name="q${q.id}" value="D"> ${q.options.D}</label>
-            `;
-            mount.appendChild(card);
-        });
-    }
+        function showRationale() {
+            const q = examQuestions[currentIdx];
+            const area = document.getElementById('rationale-area');
+            area.style.display = 'block';
+            area.innerHTML = `<strong>Correct Answer: ${q.k}</strong><br>${q.r}`;
+        }
 
-    window.select = function(element) {
-        const parent = element.parentElement;
-        parent.querySelectorAll('.opt').forEach(o => o.classList.remove('selected-opt'));
-        element.classList.add('selected-opt');
-    };
+        function nextQuestion() {
+            if (!selectedAns) return alert("Please select an answer first!");
 
-    // Analysis Logic
-    window.analyzePerformance = function() {
-        const name = document.getElementById('candidate').value || "Guest Candidate";
-        let correctCount = 0;
-        let htmlResults = "";
+            // Cek Jawaban
+            if (selectedAns === examQuestions[currentIdx].k) {
+                score++;
+            }
 
-        quizData.forEach(q => {
-            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
-            const answer = selected ? selected.value : "No Answer";
-            const isCorrect = answer === q.key;
-            if (isCorrect) correctCount++;
+            selectedAns = null;
+            currentIdx++;
 
-            htmlResults += `
-                <div class="result-row ${isCorrect ? 'correct' : 'incorrect'}">
-                    <span class="status-badge" style="background:${isCorrect ? '#27ae60' : '#e74c3c'}; color:white">
-                        ${isCorrect ? 'Correct' : 'Incorrect'}
-                    </span>
-                    <p><strong>Q${q.id}:</strong> ${q.vignette}</p>
-                    <p>Your Answer: <span style="font-weight:bold">${answer}</span> | 
-                       Correct Answer: <span style="font-weight:bold; color:#27ae60">${q.key}</span></p>
-                    <div class="rationale"><strong>Clinical Rationale:</strong> ${q.rationale}</div>
-                </div>
-            `;
-        });
+            if (currentIdx < examQuestions.length) {
+                renderQuestion();
+            } else {
+                finishExam();
+            }
+        }
 
-        const score = Math.round((correctCount / quizData.length) * 100);
-        const passed = score >= 60;
-
-        document.getElementById('exam-view').style.display = 'none';
-        document.getElementById('transcript').style.display = 'block';
-
-        document.getElementById('meta-data').innerHTML = `
-            <div class="score-box ${passed ? 'pass' : 'fail'}">
-                <h1 style="margin:0; font-size:3em;">${score}%</h1>
-                <h2>${passed ? 'PASSED - CLINICALLY COMPETENT' : 'FAILED - NEEDS REMEDIATION'}</h2>
-                <p>Candidate: ${name} | Date: ${new Date().toLocaleDateString()}</p>
-            </div>
-        `;
-        document.getElementById('analysis-results').innerHTML = htmlResults;
-        window.scrollTo(0,0);
-    };
-
-    renderQuiz();
-</script>
-
+        function finishExam() {
+            clearInterval(timer);
+            document.getElementById('exam-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            
+            const finalScore = Math.round((score / examQuestions.length) * 100);
+            document.getElementById('score-display').innerText = `${finalScore}%`;
+            
+            let feedback = finalScore >= 70 ? "Excellent! You are ready for the Prometric." : "Keep studying. You need at least 70% to pass.";
+            document.getElementById('feedback-text').innerText = feedback;
+        }
+    </script>
 </body>
 </html>
