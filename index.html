@@ -3,198 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCFHS Prometric Exam Simulator - Level 4</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>SCFHS Nursing Exam Simulator - Level 4</title>
     <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #34495e;
-            --accent: #3498db;
-            --success: #27ae60;
-            --danger: #e74c3c;
-            --light: #f4f7f6;
-            --white: #ffffff;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; color: #333; line-height: 1.6; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .header { border-bottom: 3px solid #2c3e50; margin-bottom: 30px; padding-bottom: 15px; }
+        .q-card { border: 1px solid #e0e0e0; padding: 25px; margin-bottom: 30px; border-radius: 8px; background: #fff; position: relative; }
+        .q-number { position: absolute; top: -12px; left: 15px; background: #2c3e50; color: white; padding: 2px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9em; }
+        .vignette { font-weight: 600; font-size: 1.1em; color: #2c3e50; margin-bottom: 20px; display: block; }
+        .opt { display: block; margin: 12px 0; padding: 15px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .opt:hover { background: #eef2f7; border-color: #3498db; }
+        .opt input { margin-right: 15px; transform: scale(1.2); }
+        .selected-opt { background: #e7eff7; border-color: #3498db; }
+        button { background: #2c3e50; color: white; padding: 20px; border: none; width: 100%; cursor: pointer; border-radius: 8px; font-size: 18px; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        button:hover { background: #1a252f; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        
+        #transcript { display: none; }
+        .result-row { padding: 20px; margin-bottom: 20px; border-left: 6px solid #ccc; background: #fdfdfd; border-radius: 4px; }
+        .correct { border-left-color: #27ae60; background: #f0fff4; }
+        .incorrect { border-left-color: #e74c3c; background: #fff5f5; }
+        .rationale { background: #eef6ff; padding: 15px; margin-top: 15px; border-radius: 6px; font-size: 0.95em; color: #2c3e50; border: 1px dashed #3498db; }
+        .status-badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.85em; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
+        
+        .score-box { text-align: center; padding: 40px; border-radius: 12px; color: white; margin-bottom: 30px; }
+        .pass { background: #27ae60; }
+        .fail { background: #e74c3c; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--light);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* HEADER */
-        header {
-            background-color: var(--primary);
-            color: var(--white);
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
-        header p { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.8; }
-
-        /* MAIN CONTENT */
-        main {
-            flex: 1;
-            padding: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .card {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            position: relative;
-        }
-
-        .progress-container {
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-            color: var(--secondary);
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .vignette {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: var(--primary);
-            margin-bottom: 2rem;
-            padding-left: 1rem;
-            border-left: 4px solid var(--accent);
-        }
-
-        .options {
-            display: grid;
-            gap: 10px;
-        }
-
-        .option-btn {
-            background: var(--white);
-            border: 2px solid #e0e0e0;
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 1rem;
-        }
-
-        .option-btn:hover {
-            border-color: var(--accent);
-            background-color: #f0f8ff;
-        }
-
-        .option-btn.selected {
-            border-color: var(--accent);
-            background-color: #e3f2fd;
-            font-weight: 600;
-        }
-
-        /* RATIONALE SECTION */
-        #rationale-box {
-            margin-top: 20px;
-            padding: 1.5rem;
-            background-color: #fff9db;
-            border-radius: 8px;
-            border-left: 5px solid #f1c40f;
-            display: none;
-        }
-
-        .rationale-header {
-            font-weight: bold;
-            color: #856404;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }
-
-        /* CONTROLS */
-        .controls {
-            margin-top: 2rem;
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        button.action-btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: opacity 0.2s;
-        }
-
-        .btn-prev { background: #95a5a6; color: white; }
-        .btn-show { background: var(--accent); color: white; }
-        .btn-next { background: var(--success); color: white; }
-
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        /* FOOTER */
-        footer {
-            background: var(--secondary);
-            color: var(--white);
-            text-align: center;
-            padding: 1rem;
-            font-size: 0.8rem;
-        }
-
-        @media (max-width: 600px) {
-            main { padding: 1rem; }
-            .controls { flex-direction: column; }
-        }
+        @media print { button { display: none; } }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>SCFHS NURSING LICENSURE EXAM</h1>
-    <p>Level 4: Medical-Surgical Specialty Vignettes</p>
-</header>
-
-<main>
-    <div class="card">
-        <div class="progress-container">
-            <span id="question-number">Question 1/100</span>
-            <span id="timer">00:00</span>
+<div class="container">
+    <div id="exam-view">
+        <div class="header">
+            <h1 style="margin:0; color:#2c3e50;">Nursing Competency Simulator</h1>
+            <p style="color:#666;">Focus: <strong>SCFHS Prometric Standard</strong> | Target: <strong>Critical Thinking Level 4</strong></p>
+            <div style="margin-top:20px;">
+                <label><strong>Candidate Name:</strong></label>
+                <input type="text" id="candidate" placeholder="Input your name..." style="width:100%; padding:12px; margin-top:8px; border: 2px solid #ddd; border-radius: 6px; font-size:16px;">
+            </div>
         </div>
 
-        <div id="vignette-container" class="vignette">
+        <div id="quiz-mount">
             </div>
 
-        <div id="options-container" class="options">
-            </div>
-
-        <div id="rationale-box">
-            <div class="rationale-header">Clinical Rationale & SCFHS Standards</div>
-            <div id="rationale-text"></div>
-        </div>
-
-        <div class="controls">
-            <button class="action-btn btn-prev" onclick="prevQuestion()" id="prev-btn">Previous</button>
-            <button class="action-btn btn-show" onclick="toggleRationale()">Show Rationale</button>
-            <button class="action-btn btn-next" onclick="nextQuestion()" id="next-btn">Next</button>
-        </div>
+        <button onclick="analyzePerformance()">FINISH & GENERATE ANALYTICS</button>
     </div>
-</main>
 
-<footer>
-    &copy; 2026 Nursing Education Portal | Advanced Prometric Simulator | Based on NPSG Standards
-</footer>
+    <div id="transcript">
+        <div id="meta-data"></div>
+        <h2 style="border-bottom: 2px solid #2c3e50; padding-bottom:10px;">Clinical Performance Review</h2>
+        <div id="analysis-results"></div>
+        <button onclick="window.print()" style="background:#34495e;">Download PDF Report</button>
+        <button onclick="location.reload()" style="background:#95a5a6; margin-top:10px;">Retake Examination</button>
+    </div>
+</div>
 
 <script>
-    // DATA OBJEK SOAL
-    const questions = [
+    // Database Soal (diambil dari rawData Anda)
+    const rawData = `
         {
        id: 1,
             v: "A 62-year-old male with Congestive Heart Failure is receiving high-dose Furosemide. The nurse notes confusion, muscle weakness, and prominent U-waves on the ECG. What is the priority nursing action?",
@@ -1516,69 +1384,103 @@
             scfhs: "SCFHS: (B) 'Safe Action'. (A) and (C) are 'Unsafe' practices that cause injury. Seizures cannot be stopped by the patient (D)."
         }
         // TERUSKAN SAMPAI 100 DENGAN FORMAT YANG SAMA
-    ];
+    `;
 
-    let currentIdx = 0;
-    let seconds = 0;
+    // Parser Logic: Mengubah teks mentah menjadi array objek
+    function parseQuestions(text) {
+        const blocks = text.trim().split(/ID: \d+/);
+        const questions = [];
+        let idCounter = 1;
 
-    // TIMER LOGIC
-    setInterval(() => {
-        seconds++;
-        let m = Math.floor(seconds / 60).toString().padStart(2, '0');
-        let s = (seconds % 60).toString().padStart(2, '0');
-        document.getElementById('timer').innerText = `${m}:${s}`;
-    }, 1000);
+        blocks.forEach(block => {
+            if (block.trim() === "") return;
+            
+            const lines = block.trim().split('\n');
+            const qObj = { id: idCounter++, options: {} };
+            
+            lines.forEach(line => {
+                if (line.startsWith('V:')) qObj.vignette = line.replace('V:', '').trim();
+                if (line.startsWith('A:')) qObj.options.A = line.replace('A:', '').trim();
+                if (line.startsWith('B:')) qObj.options.B = line.replace('B:', '').trim();
+                if (line.startsWith('C:')) qObj.options.C = line.replace('C:', '').trim();
+                if (line.startsWith('D:')) qObj.options.D = line.replace('D:', '').trim();
+                if (line.startsWith('K:')) qObj.key = line.replace('K:', '').trim();
+                if (line.startsWith('SCFHS:')) qObj.rationale = line.replace('SCFHS:', '').trim();
+            });
+            questions.push(qObj);
+        });
+        return questions;
+    }
 
-    function loadQuestion(index) {
-        const q = questions[index];
-        document.getElementById('question-number').innerText = `Question ${index + 1}/${questions.length}`;
-        document.getElementById('vignette-container').innerText = q.v;
-        
-        const optionsHTML = `
-            <button class="option-btn" onclick="selectOpt(this, 'A')">A. ${q.a}</button>
-            <button class="option-btn" onclick="selectOpt(this, 'B')">B. ${q.b}</button>
-            <button class="option-btn" onclick="selectOpt(this, 'C')">C. ${q.c}</button>
-            <button class="option-btn" onclick="selectOpt(this, 'D')">D. ${q.d}</button>
+    const quizData = parseQuestions(rawData);
+
+    // Render Logic
+    function renderQuiz() {
+        const mount = document.getElementById('quiz-mount');
+        quizData.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = 'q-card';
+            card.innerHTML = `
+                <div class="q-number">Question ${q.id}</div>
+                <div class="vignette">${q.vignette}</div>
+                <label class="opt" onclick="select(this)"><input type="radio" name="q${q.id}" value="A"> ${q.options.A}</label>
+                <label class="opt" onclick="select(this)"><input type="radio" name="q${q.id}" value="B"> ${q.options.B}</label>
+                <label class="opt" onclick="select(this)"><input type="radio" name="q${q.id}" value="C"> ${q.options.C}</label>
+                <label class="opt" onclick="select(this)"><input type="radio" name="q${q.id}" value="D"> ${q.options.D}</label>
+            `;
+            mount.appendChild(card);
+        });
+    }
+
+    window.select = function(element) {
+        const parent = element.parentElement;
+        parent.querySelectorAll('.opt').forEach(o => o.classList.remove('selected-opt'));
+        element.classList.add('selected-opt');
+    };
+
+    // Analysis Logic
+    window.analyzePerformance = function() {
+        const name = document.getElementById('candidate').value || "Guest Candidate";
+        let correctCount = 0;
+        let htmlResults = "";
+
+        quizData.forEach(q => {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            const answer = selected ? selected.value : "No Answer";
+            const isCorrect = answer === q.key;
+            if (isCorrect) correctCount++;
+
+            htmlResults += `
+                <div class="result-row ${isCorrect ? 'correct' : 'incorrect'}">
+                    <span class="status-badge" style="background:${isCorrect ? '#27ae60' : '#e74c3c'}; color:white">
+                        ${isCorrect ? 'Correct' : 'Incorrect'}
+                    </span>
+                    <p><strong>Q${q.id}:</strong> ${q.vignette}</p>
+                    <p>Your Answer: <span style="font-weight:bold">${answer}</span> | 
+                       Correct Answer: <span style="font-weight:bold; color:#27ae60">${q.key}</span></p>
+                    <div class="rationale"><strong>Clinical Rationale:</strong> ${q.rationale}</div>
+                </div>
+            `;
+        });
+
+        const score = Math.round((correctCount / quizData.length) * 100);
+        const passed = score >= 60;
+
+        document.getElementById('exam-view').style.display = 'none';
+        document.getElementById('transcript').style.display = 'block';
+
+        document.getElementById('meta-data').innerHTML = `
+            <div class="score-box ${passed ? 'pass' : 'fail'}">
+                <h1 style="margin:0; font-size:3em;">${score}%</h1>
+                <h2>${passed ? 'PASSED - CLINICALLY COMPETENT' : 'FAILED - NEEDS REMEDIATION'}</h2>
+                <p>Candidate: ${name} | Date: ${new Date().toLocaleDateString()}</p>
+            </div>
         `;
-        document.getElementById('options-container').innerHTML = optionsHTML;
-        
-        // Reset Rationale
-        document.getElementById('rationale-box').style.display = 'none';
-        document.getElementById('rationale-text').innerHTML = `<strong>Answer: ${q.k}</strong><br><br>${q.str}<br><br><em>${q.scfhs}</em>`;
+        document.getElementById('analysis-results').innerHTML = htmlResults;
+        window.scrollTo(0,0);
+    };
 
-        // Update Button State
-        document.getElementById('prev-btn').disabled = index === 0;
-        document.getElementById('next-btn').disabled = index === questions.length - 1;
-    }
-
-    function selectOpt(btn, val) {
-        const allBtns = document.querySelectorAll('.option-btn');
-        allBtns.forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-    }
-
-    function toggleRationale() {
-        const box = document.getElementById('rationale-box');
-        box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
-    }
-
-    function nextQuestion() {
-        if (currentIdx < questions.length - 1) {
-            currentIdx++;
-            loadQuestion(currentIdx);
-        }
-    }
-
-    function prevQuestion() {
-        if (currentIdx > 0) {
-            currentIdx--;
-            loadQuestion(currentIdx);
-        }
-    }
-
-    // Inisialisasi awal
-    window.onload = () => loadQuestion(0);
-
+    renderQuiz();
 </script>
 
 </body>
