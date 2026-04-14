@@ -1,56 +1,201 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCFHS Prometric Exam Simulator - Medical Surgical</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>SCFHS Prometric Exam Simulator - Level 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        .option-card:hover { border-color: #3b82f6; background-color: #eff6ff; }
-        .selected { border-color: #2563eb !important; background-color: #dbeafe !important; font-weight: bold; }
-        .correct { border-color: #10b981 !important; background-color: #d1fae5 !important; }
-        .wrong { border-color: #ef4444 !important; background-color: #fee2e2 !important; }
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #f4f7f6;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
+        header p { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.8; }
+
+        /* MAIN CONTENT */
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .progress-container {
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: var(--secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .vignette {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            padding-left: 1rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: var(--white);
+            border: 2px solid #e0e0e0;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent);
+            background-color: #f0f8ff;
+        }
+
+        .option-btn.selected {
+            border-color: var(--accent);
+            background-color: #e3f2fd;
+            font-weight: 600;
+        }
+
+        /* RATIONALE SECTION */
+        #rationale-box {
+            margin-top: 20px;
+            padding: 1.5rem;
+            background-color: #fff9db;
+            border-radius: 8px;
+            border-left: 5px solid #f1c40f;
+            display: none;
+        }
+
+        .rationale-header {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        /* CONTROLS */
+        .controls {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        button.action-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .btn-prev { background: #95a5a6; color: white; }
+        .btn-show { background: var(--accent); color: white; }
+        .btn-next { background: var(--success); color: white; }
+
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* FOOTER */
+        footer {
+            background: var(--secondary);
+            color: var(--white);
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 600px) {
+            main { padding: 1rem; }
+            .controls { flex-direction: column; }
+        }
     </style>
 </head>
-<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+<body>
 
-<div class="container mx-auto p-4 max-w-4xl">
-    <header class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-blue-800">SCFHS NURSING LICENSURE EXAM</h1>
-        <p class="text-gray-600">Level 4: Medical-Surgical Specialty Vignettes</p>
-        <div id="progress-bar" class="w-full bg-gray-300 h-2 mt-4 rounded-full overflow-hidden">
-            <div id="progress-fill" class="bg-blue-600 h-full w-0 transition-all duration-300"></div>
-        </div>
-    </header>
+<header>
+    <h1>SCFHS NURSING LICENSURE EXAM</h1>
+    <p>Level 4: Medical-Surgical Specialty Vignettes</p>
+</header>
 
-    <div id="quiz-container" class="bg-white rounded-lg shadow-lg p-6 min-h-[400px]">
-        <div id="question-header" class="flex justify-between items-center mb-4">
-            <span id="question-number" class="text-lg font-semibold text-blue-700">Question 1/100</span>
-            <span id="timer" class="text-red-600 font-mono font-bold">00:00</span>
+<main>
+    <div class="card">
+        <div class="progress-container">
+            <span id="question-number">Question 1/100</span>
+            <span id="timer">00:00</span>
         </div>
 
-        <div id="vignette" class="text-gray-800 text-lg mb-6 leading-relaxed italic border-l-4 border-blue-500 pl-4">
+        <div id="vignette-container" class="vignette">
             </div>
 
-        <div id="options-container" class="space-y-3">
+        <div id="options-container" class="options">
             </div>
 
-        <div id="rationale-container" class="mt-8 p-4 bg-yellow-50 rounded-lg hidden border border-yellow-200">
-            <h3 class="font-bold text-yellow-800 mb-2">RATIONALE:</h3>
-            <p id="str-rationale" class="text-sm text-gray-700 mb-2"></p>
-            <p id="scfhs-rationale" class="text-sm font-semibold text-blue-900"></p>
+        <div id="rationale-box">
+            <div class="rationale-header">Clinical Rationale & SCFHS Standards</div>
+            <div id="rationale-text"></div>
         </div>
 
-        <div class="flex justify-between mt-8">
-            <button id="prev-btn" class="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 disabled:opacity-50">Previous</button>
-            <button id="show-rationale-btn" class="px-6 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">Show Rationale</button>
-            <button id="next-btn" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Next</button>
+        <div class="controls">
+            <button class="action-btn btn-prev" onclick="prevQuestion()" id="prev-btn">Previous</button>
+            <button class="action-btn btn-show" onclick="toggleRationale()">Show Rationale</button>
+            <button class="action-btn btn-next" onclick="nextQuestion()" id="next-btn">Next</button>
         </div>
     </div>
-</div>
+</main>
+
+<footer>
+    &copy; 2026 Nursing Education Portal | Advanced Prometric Simulator | Based on NPSG Standards
+</footer>
 
 <script>
+    // DATA OBJEK SOAL
     const questions = [
+        {
        id: 1,
             v: "A 62-year-old male with Congestive Heart Failure is receiving high-dose Furosemide. The nurse notes confusion, muscle weakness, and prominent U-waves on the ECG. What is the priority nursing action?",
             a: "Hold the Furosemide and notify the physician immediately.",
@@ -1374,66 +1519,67 @@
     ];
 
     let currentIdx = 0;
+    let seconds = 0;
 
-    const vElem = document.getElementById('vignette');
-    const optionsElem = document.getElementById('options-container');
-    const numElem = document.getElementById('question-number');
-    const strElem = document.getElementById('str-rationale');
-    const scfhsElem = document.getElementById('scfhs-rationale');
-    const ratContainer = document.getElementById('rationale-container');
-    const progressFill = document.getElementById('progress-fill');
+    // TIMER LOGIC
+    setInterval(() => {
+        seconds++;
+        let m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        let s = (seconds % 60).toString().padStart(2, '0');
+        document.getElementById('timer').innerText = `${m}:${s}`;
+    }, 1000);
 
-    function loadQuestion(idx) {
-        const q = questions[idx];
-        vElem.innerText = q.v;
-        numElem.innerText = `Question ${idx + 1}/${questions.length}`;
-        ratContainer.classList.add('hidden');
-        progressFill.style.width = `${((idx + 1) / questions.length) * 100}%`;
-
-        optionsElem.innerHTML = '';
-        ['a', 'b', 'c', 'd'].forEach(letter => {
-            const btn = document.createElement('div');
-            btn.className = "option-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer transition-all";
-            btn.innerHTML = `<span class="font-bold mr-2">${letter.toUpperCase()}:</span> ${q[letter]}`;
-            btn.onclick = () => selectOption(btn, letter, q.k);
-            optionsElem.appendChild(btn);
-        });
-
-        strElem.innerText = q.str;
-        scfhsElem.innerText = q.scfhs;
-    }
-
-    function selectOption(elem, choice, correct) {
-        const allOptions = optionsElem.children;
-        for (let opt of allOptions) opt.classList.remove('selected', 'correct', 'wrong');
+    function loadQuestion(index) {
+        const q = questions[index];
+        document.getElementById('question-number').innerText = `Question ${index + 1}/${questions.length}`;
+        document.getElementById('vignette-container').innerText = q.v;
         
-        if (choice.toUpperCase() === correct.toUpperCase()) {
-            elem.classList.add('correct');
-        } else {
-            elem.classList.add('wrong');
-        }
-        ratContainer.classList.remove('hidden');
+        const optionsHTML = `
+            <button class="option-btn" onclick="selectOpt(this, 'A')">A. ${q.a}</button>
+            <button class="option-btn" onclick="selectOpt(this, 'B')">B. ${q.b}</button>
+            <button class="option-btn" onclick="selectOpt(this, 'C')">C. ${q.c}</button>
+            <button class="option-btn" onclick="selectOpt(this, 'D')">D. ${q.d}</button>
+        `;
+        document.getElementById('options-container').innerHTML = optionsHTML;
+        
+        // Reset Rationale
+        document.getElementById('rationale-box').style.display = 'none';
+        document.getElementById('rationale-text').innerHTML = `<strong>Answer: ${q.k}</strong><br><br>${q.str}<br><br><em>${q.scfhs}</em>`;
+
+        // Update Button State
+        document.getElementById('prev-btn').disabled = index === 0;
+        document.getElementById('next-btn').disabled = index === questions.length - 1;
     }
 
-    document.getElementById('next-btn').onclick = () => {
+    function selectOpt(btn, val) {
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+    }
+
+    function toggleRationale() {
+        const box = document.getElementById('rationale-box');
+        box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
+    }
+
+    function nextQuestion() {
         if (currentIdx < questions.length - 1) {
             currentIdx++;
             loadQuestion(currentIdx);
         }
-    };
+    }
 
-    document.getElementById('prev-btn').onclick = () => {
+    function prevQuestion() {
         if (currentIdx > 0) {
             currentIdx--;
             loadQuestion(currentIdx);
         }
-    };
+    }
 
-    document.getElementById('show-rationale-btn').onclick = () => {
-        ratContainer.classList.toggle('hidden');
-    };
+    // Inisialisasi awal
+    window.onload = () => loadQuestion(0);
 
-    loadQuestion(currentIdx);
 </script>
+
 </body>
 </html>
